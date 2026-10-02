@@ -46,7 +46,7 @@ POST /api/engines/:id/rul-prediction
 POST /api/engines/:id/replay
 GET  /api/replay/jobs/:id
 POST /api/engines/:id/maintenance-simulation
-POST /api/models/compare
+POST /api/models/compare        # 支持可选 flightId 限定单次架次，返回部件风险、最先受限部件与解释；未知架次/模型返回 4xx
 GET  /api/engines/:id/risk-events
 GET  /api/audit/:engineId
 ```
@@ -59,4 +59,8 @@ curl http://127.0.0.1:6195/api/engines/ENG-DEMO-001/health-assessment
 curl -X POST http://127.0.0.1:6195/api/engines/ENG-DEMO-001/rul-prediction \
   -H 'content-type: application/json' \
   -d '{"horizonCycles":120}'
+# 只比较单次架次；省略 flightId 时使用全部遥测。比较结果为只读，不写入健康评估、RUL 或发动机状态
+curl -X POST http://127.0.0.1:6195/api/models/compare \
+  -H 'content-type: application/json' \
+  -d '{"engineId":"ENG-DEMO-001","flightId":"FLIGHT-0310","modelIds":["health-v1","health-v2"]}'
 ```
